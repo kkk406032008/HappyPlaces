@@ -13,11 +13,10 @@ class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 1 // Database version
-        private const val DATABASE_NAME = "HappyPlacesDatabase" // Database name
-        private const val TABLE_HAPPY_PLACE = "HappyPlacesTable" // Table Name
+        private const val DATABASE_VERSION = 1
+        private const val DATABASE_NAME = "HappyPlacesDatabase"
+        private const val TABLE_HAPPY_PLACE = "HappyPlacesTable"
 
-        //All the Columns names
         private const val KEY_ID = "_id"
         private const val KEY_TITLE = "title"
         private const val KEY_IMAGE = "image"
@@ -29,7 +28,6 @@ class DatabaseHandler(context: Context) :
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        //creating table with fields
         val CREATE_HAPPY_PLACE_TABLE = ("CREATE TABLE " + TABLE_HAPPY_PLACE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_TITLE + " TEXT,"
@@ -47,38 +45,57 @@ class DatabaseHandler(context: Context) :
         onCreate(db)
     }
 
-    /**
-     * Function to insert a Happy Place details to SQLite Database.
-     */
     fun addHappyPlace(happyPlace: HappyPlaceModel): Long {
         val db = this.writableDatabase
 
         val contentValues = ContentValues()
-        contentValues.put(KEY_TITLE, happyPlace.title) // HappyPlaceModelClass TITLE
-        contentValues.put(KEY_IMAGE, happyPlace.image) // HappyPlaceModelClass IMAGE
+        contentValues.put(KEY_TITLE, happyPlace.title)
+        contentValues.put(KEY_IMAGE, happyPlace.image)
         contentValues.put(
             KEY_DESCRIPTION,
             happyPlace.description
-        ) // HappyPlaceModelClass DESCRIPTION
-        contentValues.put(KEY_DATE, happyPlace.date) // HappyPlaceModelClass DATE
-        contentValues.put(KEY_LOCATION, happyPlace.location) // HappyPlaceModelClass LOCATION
-        contentValues.put(KEY_LATITUDE, happyPlace.latitude) // HappyPlaceModelClass LATITUDE
-        contentValues.put(KEY_LONGITUDE, happyPlace.longitude) // HappyPlaceModelClass LONGITUDE
+        )
+        contentValues.put(KEY_DATE, happyPlace.date)
+        contentValues.put(KEY_LOCATION, happyPlace.location)
+        contentValues.put(KEY_LATITUDE, happyPlace.latitude)
+        contentValues.put(KEY_LONGITUDE, happyPlace.longitude)
 
-        // Inserting Row
         val result = db.insert(TABLE_HAPPY_PLACE, null, contentValues)
-        //2nd argument is String containing nullColumnHack  
 
-        db.close() // Closing database connection
+        db.close()
         return result
     }
 
-    /**
-     * Function to read all the list of Happy Places data which are inserted.
-     */
+    fun updateHappyPlace(happyPlace: HappyPlaceModel): Int {
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(KEY_TITLE, happyPlace.title)
+        contentValues.put(KEY_IMAGE, happyPlace.image)
+        contentValues.put(
+            KEY_DESCRIPTION,
+            happyPlace.description
+        )
+        contentValues.put(KEY_DATE, happyPlace.date)
+        contentValues.put(KEY_LOCATION, happyPlace.location)
+        contentValues.put(KEY_LATITUDE, happyPlace.latitude)
+        contentValues.put(KEY_LONGITUDE, happyPlace.longitude)
+
+        val success = db.update(TABLE_HAPPY_PLACE, contentValues, KEY_ID + "=" + happyPlace.id, null)
+
+        return success
+    }
+
+    fun deleteHappyPlace(happyPlace: HappyPlaceModel): Int{
+        val db = this.writableDatabase
+        val success = db.delete(TABLE_HAPPY_PLACE, KEY_ID +"=" + happyPlace.id, null)
+        db.close()
+        return success
+    }
+
+
     fun getHappyPlacesList(): ArrayList<HappyPlaceModel> {
 
-        // A list is initialize using the data model class in which we will add the values from cursor.
         val happyPlaceList: ArrayList<HappyPlaceModel> = ArrayList()
 
         val selectQuery = "SELECT  * FROM $TABLE_HAPPY_PLACE" // Database select query
