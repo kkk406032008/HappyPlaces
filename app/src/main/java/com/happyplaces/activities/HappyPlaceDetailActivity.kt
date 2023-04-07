@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_happy_place_detail.*
 
 class HappyPlaceDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        //自動化包板測試
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_happy_place_detail)
 
